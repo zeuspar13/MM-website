@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Malmstrom Media — Amazon Growth Agency</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            teal: { DEFAULT: '#4BAFC4', dark: '#2E8FA3', light: '#7DCFDF' },
+            charcoal: { DEFAULT: '#3D3D3D', deep: '#252525', mid: '#4A4A4A' },
+            cream: '#F7F5F2',
+          },
+          fontFamily: {
+            display: ['"Cormorant Garamond"', 'serif'],
+            body: ['Outfit', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-family: 'Outfit', sans-serif; }
+    body { background: #252525; color: #fff; overflow-x: hidden; }
+
+    /* ── Grain overlay ─────────────────────────────────────── */
+    .grain {
+      position: relative;
+    }
+    .grain::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)'/%3E%3C/svg%3E");
+      opacity: 0.04;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ── Typography ─────────────────────────────────────────── */
+    .display { font-family: 'Cormorant Garamond', serif; }
+
+    /* ── Nav ───────────────────────────────────────────────── */
+    #navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 50;
+      padding: 1.25rem 0;
+      transition: background 0.4s ease, padding 0.3s ease;
+    }
+    #navbar.scrolled {
+      background: rgba(37, 37, 37, 0.97);
+      backdrop-filter: blur(12px);
+      padding: 0.9rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .nav-link {
+      color: rgba(255,255,255,0.55);
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    .nav-link:hover { color: #fff; }
+    .nav-link:focus-visible { outline: 2px solid #4BAFC4; outline-offset: 4px; }
+
+    /* ── Buttons ────────────────────────────────────────────── */
+    .btn-primary {
+      display: inline-block;
+      background: #4BAFC4;
+      color: #252525;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 14px 32px;
+      transition: background 0.2s ease, transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s ease;
+    }
+    .btn-primary:hover {
+      background: #7DCFDF;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(75,175,196,0.35);
+    }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-primary:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+    .btn-outline {
+      display: inline-block;
+      border: 1px solid rgba(255,255,255,0.25);
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 500;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 14px 32px;
+      transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .btn-outline:hover {
+      border-color: #4BAFC4;
+      color: #4BAFC4;
+      transform: translateY(-2px);
+    }
+    .btn-outline:active { transform: translateY(0); }
+    .btn-outline:focus-visible { outline: 2px solid #4BAFC4; outline-offset: 3px; }
+
+    /* ── Section label ──────────────────────────────────────── */
+    .label {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #4BAFC4;
+    }
+
+    /* ── Service cards ──────────────────────────────────────── */
+    .service-card {
+      position: relative;
+      background: #fff;
+      padding: 2rem;
+      overflow: hidden;
+      transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1),
+                  box-shadow 0.3s ease;
+    }
+    .service-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: #4BAFC4;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.35s ease;
+    }
+    .service-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 24px 64px rgba(75,175,196,0.12), 0 8px 24px rgba(0,0,0,0.1);
+    }
+    .service-card:hover::after { transform: scaleX(1); }
+
+    /* ── Icon bg ────────────────────────────────────────────── */
+    .icon-box {
+      width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(75,175,196,0.1);
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── Marquee ────────────────────────────────────────────── */
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    .marquee-track {
+      display: flex;
+      white-space: nowrap;
+      animation: marquee 30s linear infinite;
+    }
+    .marquee-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 2rem;
+      padding: 0 2rem;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #252525;
+    }
+    .marquee-dot { color: #252525; font-size: 0.45rem; opacity: 0.5; }
+
+    /* ── Why pillars ────────────────────────────────────────── */
+    .pillar {
+      padding: 1.5rem 1.75rem;
+      border-left: 2px solid #4BAFC4;
+      transition: background 0.2s ease;
+    }
+    .pillar:hover { background: rgba(75,175,196,0.05); }
+
+    /* ── Form ───────────────────────────────────────────────── */
+    .form-label {
+      display: block;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 0.5rem;
+    }
+    .form-field {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.88rem;
+      padding: 13px 16px;
+      outline: none;
+      transition: border-color 0.2s ease, background 0.2s ease;
+      appearance: none;
+    }
+    .form-field::placeholder { color: rgba(255,255,255,0.25); }
+    .form-field:focus {
+      border-color: #4BAFC4;
+      background: rgba(75,175,196,0.05);
+    }
+
+    /* ── Scroll indicator ───────────────────────────────────── */
+    @keyframes scrollDot {
+      0%   { transform: translateY(-100%); opacity: 0; }
+      30%  { opacity: 1; }
+      100% { transform: translateY(200%); opacity: 0; }
+    }
+    .scroll-dot { animation: scrollDot 1.8s ease infinite; }
+
+    /* ── Fade-up on scroll ──────────────────────────────────── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.75s ease,
+                  transform 0.75s cubic-bezier(0.33, 1, 0.68, 1);
+    }
+    .fade-up.in { opacity: 1; transform: translateY(0); }
+
+    /* ── Scrollbar ──────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: #1a1a1a; }
+    ::-webkit-scrollbar-thumb { background: #4BAFC4; }
+  </style>
+</head>
+
+<body>
+
+  <!-- ════════════════════════════════════════════════════
+       NAV
+  ════════════════════════════════════════════════════ -->
+  <nav id="navbar">
+    <div style="max-width:1280px; margin:0 auto; padding:0 2rem; display:flex; align-items:center; justify-content:space-between;">
+      <a href="#" aria-label="Malmstrom Media home">
+        <img src="brand_assets/MM Logo.png" alt="Malmstrom Media" style="height:36px; width:auto;">
+      </a>
+      <div style="display:flex; align-items:center; gap:2.5rem;">
+        <a href="#services" class="nav-link">Services</a>
+        <a href="#about" class="nav-link">About</a>
+        <a href="#process" class="nav-link">Process</a>
+        <a href="#contact" class="btn-primary" style="padding:11px 24px;">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+
+  <!-- ════════════════════════════════════════════════════
+       HERO
+  ════════════════════════════════════════════════════ -->
+  <section class="grain" style="position:relative; min-height:100vh; display:flex; flex-direction:column; justify-content:center; background:#252525; overflow:hidden;">
+
+    <!-- Glowy wave canvas background -->
+    <canvas id="hero-canvas" aria-hidden="true" style="position:absolute; inset:0; width:100%; height:100%; display:block;"></canvas>
+
+    <div style="position:relative; z-index:2; max-width:1280px; margin:0 auto; padding:8rem 2rem 5rem; width:100%;">
+      <div style="max-width:780px;">
+
+        <p class="label fade-up" style="margin-bottom:1.25rem;">Amazon Growth Agency</p>
+
+        <h1 class="display fade-up" style="font-size:clamp(3.2rem,7vw,6.5rem); font-weight:600; line-height:1.0; letter-spacing:-0.025em; color:#fff; margin-bottom:2rem;">
+          Scale Your<br>
+          Amazon Brand<br>
+          <em style="color:#4BAFC4; font-style:italic;">With Confidence</em>
+        </h1>
+
+        <p class="fade-up" style="color:rgba(255,255,255,0.55); font-size:1.05rem; line-height:1.8; max-width:520px; margin-bottom:2.5rem;">
+          Malmstrom Media is a full-service Amazon agency. Product sourcing, PPC, brand management, and consultancy — we handle the complexity so you can focus on growth.
+        </p>
+
+        <div class="fade-up" style="display:flex; gap:1rem; flex-wrap:wrap;">
+          <a href="#contact" class="btn-primary">Get a Free Audit</a>
+          <a href="#services" class="btn-outline">View Services</a>
+        </div>
+
+      </div>
+
+      <!-- Hero stat bar -->
+      <div class="fade-up" style="margin-top:5rem; padding-top:2.5rem; border-top:1px solid rgba(255,255,255,0.08); display:grid; grid-template-columns:repeat(4,1fr);">
+        <div style="padding-right:2rem; border-right:1px solid rgba(255,255,255,0.08);">
+          <div class="display" style="font-size:2.5rem; font-weight:600; color:#fff; line-height:1;">200<span style="color:#4BAFC4;">+</span></div>
+          <div style="margin-top:0.4rem; font-size:0.7rem; font-weight:500; letter-spacing:0.16em; text-transform:uppercase; color:rgba(255,255,255,0.35);">Brands Scaled</div>
+        </div>
+        <div style="padding:0 2rem; border-right:1px solid rgba(255,255,255,0.08);">
+          <div class="display" style="font-size:2.5rem; font-weight:600; color:#fff; line-height:1;">$85<span style="color:#4BAFC4;">M</span></div>
+          <div style="margin-top:0.4rem; font-size:0.7rem; font-weight:500; letter-spacing:0.16em; text-transform:uppercase; color:rgba(255,255,255,0.35);">Revenue Driven</div>
+        </div>
+        <div style="padding:0 2rem; border-right:1px solid rgba(255,255,255,0.08);">
+          <div class="display" style="font-size:2.5rem; font-weight:600; color:#fff; line-height:1;">95<span style="color:#4BAFC4;">%</span></div>
+          <div style="margin-top:0.4rem; font-size:0.7rem; font-weight:500; letter-spacing:0.16em; text-transform:uppercase; color:rgba(255,255,255,0.35);">Client Retention</div>
+        </div>
+        <div style="padding-left:2rem;">
+          <div class="display" style="font-size:2.5rem; font-weight:600; color:#fff; line-height:1;">12<span style="color:#4BAFC4;">+</span></div>
+          <div style="margin-top:0.4rem; font-size:0.7rem; font-weight:500; letter-spacing:0.16em; text-transform:uppercase; color:rgba(255,255,255,0.35);">Years Experience</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div style="position:absolute; bottom:2rem; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:0.5rem; opacity:0.3; z-index:2;">
+      <span style="font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase;">Scroll</span>
+      <div style="width:1px; height:40px; background:rgba(255,255,255,0.3); position:relative; overflow:hidden;">
+        <div class="scroll-dot" style="position:absolute; inset:0; background:#4BAFC4;"></div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════
+       MARQUEE BAND
+  ════════════════════════════════════════════════════ -->
+  <div style="background:#4BAFC4; padding:0.85rem 0; overflow:hidden;">
+    <div class="marquee-track">
+      <!-- Set 1 -->
+      <span class="marquee-item">Product Sourcing <span class="marquee-dot">◆</span></span>
+      <span class="marquee-item">PPC Management <span class="marquee-dot">◆</span></span>
+      <span class="marquee-item">Brand Management <span class="marquee-dot">◆</span></span>
+      <span class="marquee-item">Brand Consultancy <span class="marquee-dot">◆</span></span>
+      <span class="marquee-item">Amazon SEO <span class="marquee-dot">◆</span></span>
+      <span class="marquee-item">Listing Optimisation <span class="marquee-dot">◆</span></span>
+      <span class="marquee-item">A+ Content <span class="marquee-dot">◆</span></span>
+      <span class="marquee-item">Storefront Design <span class="marquee-dot">◆</span></span>
+      <!-- Set 2 (duplicate for seamless loop) -->
+      <span class="marquee-item">Product Sourcing <span class="marquee-dot">◆</span></span>
+      <span class="marquee-item">PPC Management <span class="marquee-dot">◆</span></span>
+      <span class="marquee-item">Brand Management <span class="marquee-dot">◆</span></span>
+      <span class="marquee-item">Brand Consultancy <span class="marquee-dot">◆</span></span>
+      <span class="marquee-item">Amazon SEO <span class="marquee-dot">◆</span></span>
+      <span class="marquee-item">Listing Optimisation <span class="marquee-dot">◆</span></span>
+      <span class="marquee-item">A+ Content <span class="marquee-dot">◆</span></span>
+      <span class="marquee-item">Storefront Design <span class="marquee-dot">◆</span></span>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════════════
+       SERVICES
+  ════════════════════════════════════════════════════ -->
+  <section id="services" style="padding:7rem 0; background:#F7F5F2;">
+    <div style="max-width:1280px; margin:0 auto; padding:0 2rem;">
+
+      <div style="margin-bottom:4rem;">
+        <p class="label fade-up" style="margin-bottom:0.75rem;">What We Do</p>
+        <h2 class="display fade-up" style="font-size:clamp(2.2rem,4vw,3.5rem); font-weight:600; color:#252525; letter-spacing:-0.02em; line-height:1.1; max-width:560px;">
+          Everything Your Brand<br>Needs to Win on Amazon
+        </h2>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:1.5rem;">
+
+        <!-- Product Sourcing -->
+        <div class="service-card fade-up" style="box-shadow:0 2px 24px rgba(0,0,0,0.06);">
+          <div class="icon-box">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4BAFC4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
+            </svg>
+          </div>
+          <h3 class="display" style="font-size:1.45rem; font-weight:600; color:#252525; letter-spacing:-0.01em; margin-bottom:0.75rem;">Product Sourcing</h3>
+          <p style="color:#6A6A6A; font-size:0.88rem; line-height:1.8;">We identify high-margin opportunities and source products that sell. From factory negotiations to quality control, we manage the full pipeline.</p>
+        </div>
+
+        <!-- PPC -->
+        <div class="service-card fade-up" style="box-shadow:0 2px 24px rgba(0,0,0,0.06); transition-delay:0.08s;">
+          <div class="icon-box">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4BAFC4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>
+            </svg>
+          </div>
+          <h3 class="display" style="font-size:1.45rem; font-weight:600; color:#252525; letter-spacing:-0.01em; margin-bottom:0.75rem;">PPC Management</h3>
+          <p style="color:#6A6A6A; font-size:0.88rem; line-height:1.8;">Data-driven advertising that converts. We build, optimise, and scale Amazon Sponsored campaigns to maximise ROAS and reduce wasted spend.</p>
+        </div>
+
+        <!-- Brand Management -->
+        <div class="service-card fade-up" style="box-shadow:0 2px 24px rgba(0,0,0,0.06); transition-delay:0.16s;">
+          <div class="icon-box">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4BAFC4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+          </div>
+          <h3 class="display" style="font-size:1.45rem; font-weight:600; color:#252525; letter-spacing:-0.01em; margin-bottom:0.75rem;">Brand Management</h3>
+          <p style="color:#6A6A6A; font-size:0.88rem; line-height:1.8;">From A+ content and storefront design to review strategy — we protect and grow your brand's presence across the full Amazon ecosystem.</p>
+        </div>
+
+        <!-- Brand Consultancy -->
+        <div class="service-card fade-up" style="box-shadow:0 2px 24px rgba(0,0,0,0.06); transition-delay:0.24s;">
+          <div class="icon-box">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4BAFC4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
+            </svg>
+          </div>
+          <h3 class="display" style="font-size:1.45rem; font-weight:600; color:#252525; letter-spacing:-0.01em; margin-bottom:0.75rem;">Brand Consultancy</h3>
+          <p style="color:#6A6A6A; font-size:0.88rem; line-height:1.8;">Strategic guidance for brands at any stage — market entry, competitive positioning, pricing strategy. We're your expert partner on the platform.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════
+       WHY US
+  ════════════════════════════════════════════════════ -->
+  <section id="about" class="grain" style="padding:7rem 0; background:#2A2A2A; position:relative; overflow:hidden;">
+    <div style="position:absolute; inset:0; background:radial-gradient(ellipse 55% 80% at 90% 50%, rgba(75,175,196,0.1) 0%, transparent 70%); pointer-events:none;"></div>
+
+    <div style="position:relative; z-index:2; max-width:1280px; margin:0 auto; padding:0 2rem;">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:6rem; align-items:center;">
+
+        <!-- Left -->
+        <div>
+          <p class="label fade-up" style="margin-bottom:0.75rem;">Why Malmstrom Media</p>
+          <h2 class="display fade-up" style="font-size:clamp(2.2rem,4vw,3.5rem); font-weight:600; color:#fff; letter-spacing:-0.02em; line-height:1.05; margin-bottom:1.75rem;">
+            We Don't Just Manage<br>Accounts. We Build<br>
+            <em style="color:#4BAFC4; font-style:italic;">Lasting Brands.</em>
+          </h2>
+          <p class="fade-up" style="color:rgba(255,255,255,0.52); font-size:0.92rem; line-height:1.85; margin-bottom:1rem;">
+            Most agencies chase short-term metrics. We take a different approach — building sustainable, defensible brands that command premium pricing and loyal customers.
+          </p>
+          <p class="fade-up" style="color:rgba(255,255,255,0.52); font-size:0.92rem; line-height:1.85; margin-bottom:2.5rem;">
+            We've managed some of the UK and US's fastest-growing Amazon brands. We know what it takes to scale, and we're selective about who we work with — because your success is our reputation.
+          </p>
+          <a href="#contact" class="btn-primary fade-up">Start the Conversation</a>
+        </div>
+
+        <!-- Right: pillars -->
+        <div style="display:flex; flex-direction:column; gap:1rem;">
+          <div class="pillar fade-up">
+            <h4 class="display" style="font-size:1.3rem; font-weight:600; color:#fff; margin-bottom:0.5rem;">Proven Track Record</h4>
+            <p style="color:rgba(255,255,255,0.45); font-size:0.86rem; line-height:1.75;">Over 200 brands scaled across 12+ categories. We have the data and the case studies to back it up.</p>
+          </div>
+          <div class="pillar fade-up" style="transition-delay:0.08s;">
+            <h4 class="display" style="font-size:1.3rem; font-weight:600; color:#fff; margin-bottom:0.5rem;">Full-Service Partnership</h4>
+            <p style="color:rgba(255,255,255,0.45); font-size:0.86rem; line-height:1.75;">From sourcing to advertising to brand building — one agency, no fragmented vendors, no miscommunication.</p>
+          </div>
+          <div class="pillar fade-up" style="transition-delay:0.16s;">
+            <h4 class="display" style="font-size:1.3rem; font-weight:600; color:#fff; margin-bottom:0.5rem;">Transparent Reporting</h4>
+            <p style="color:rgba(255,255,255,0.45); font-size:0.86rem; line-height:1.75;">Real-time dashboards and weekly calls. You always know exactly what's happening and why.</p>
+          </div>
+          <div class="pillar fade-up" style="transition-delay:0.24s;">
+            <h4 class="display" style="font-size:1.3rem; font-weight:600; color:#fff; margin-bottom:0.5rem;">No Long-Term Lock-In</h4>
+            <p style="color:rgba(255,255,255,0.45); font-size:0.86rem; line-height:1.75;">We earn your business month after month. Flexible engagements because we back ourselves to deliver results.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════
+       STATS
+  ════════════════════════════════════════════════════ -->
+  <section style="padding:5rem 0; background:#4BAFC4;">
+    <div style="max-width:1280px; margin:0 auto; padding:0 2rem;">
+      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:2rem; text-align:center;">
+
+        <div class="fade-up">
+          <div class="display" style="font-size:4.5rem; font-weight:600; color:#252525; line-height:1;">
+            <span class="counter" data-target="200">0</span><span style="color:#fff;">+</span>
+          </div>
+          <div style="margin-top:0.5rem; font-size:0.68rem; font-weight:600; letter-spacing:0.2em; text-transform:uppercase; color:rgba(37,37,37,0.6);">Brands Scaled</div>
+        </div>
+
+        <div class="fade-up" style="transition-delay:0.08s;">
+          <div class="display" style="font-size:4.5rem; font-weight:600; color:#252525; line-height:1;">
+            $<span class="counter" data-target="85">0</span><span style="color:#fff;">M</span>
+          </div>
+          <div style="margin-top:0.5rem; font-size:0.68rem; font-weight:600; letter-spacing:0.2em; text-transform:uppercase; color:rgba(37,37,37,0.6);">Revenue Driven</div>
+        </div>
+
+        <div class="fade-up" style="transition-delay:0.16s;">
+          <div class="display" style="font-size:4.5rem; font-weight:600; color:#252525; line-height:1;">
+            <span class="counter" data-target="95">0</span><span style="color:#fff;">%</span>
+          </div>
+          <div style="margin-top:0.5rem; font-size:0.68rem; font-weight:600; letter-spacing:0.2em; text-transform:uppercase; color:rgba(37,37,37,0.6);">Client Retention</div>
+        </div>
+
+        <div class="fade-up" style="transition-delay:0.24s;">
+          <div class="display" style="font-size:4.5rem; font-weight:600; color:#252525; line-height:1;">
+            <span class="counter" data-target="12">0</span><span style="color:#fff;">+</span>
+          </div>
+          <div style="margin-top:0.5rem; font-size:0.68rem; font-weight:600; letter-spacing:0.2em; text-transform:uppercase; color:rgba(37,37,37,0.6);">Years Experience</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════
+       PROCESS
+  ════════════════════════════════════════════════════ -->
+  <section id="process" style="padding:7rem 0; background:#F7F5F2;">
+    <div style="max-width:1280px; margin:0 auto; padding:0 2rem;">
+
+      <div style="text-align:center; margin-bottom:4.5rem;">
+        <p class="label fade-up" style="margin-bottom:0.75rem;">How We Work</p>
+        <h2 class="display fade-up" style="font-size:clamp(2.2rem,4vw,3.2rem); font-weight:600; color:#252525; letter-spacing:-0.02em;">A Simple, Proven Process</h2>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:4rem;">
+
+        <div class="fade-up" style="text-align:center;">
+          <div style="width:48px; height:48px; display:flex; align-items:center; justify-content:center; border:1px solid #4BAFC4; color:#4BAFC4; font-size:0.72rem; font-weight:600; letter-spacing:0.12em; margin:0 auto 1.75rem;">01</div>
+          <h3 class="display" style="font-size:1.5rem; font-weight:600; color:#252525; margin-bottom:0.75rem;">Discovery &amp; Audit</h3>
+          <p style="color:#6A6A6A; font-size:0.88rem; line-height:1.8;">We start with a comprehensive, no-charge audit of your Amazon presence — listings, advertising, reviews, and competitive landscape.</p>
+        </div>
+
+        <div class="fade-up" style="text-align:center; transition-delay:0.1s;">
+          <div style="width:48px; height:48px; display:flex; align-items:center; justify-content:center; border:1px solid #4BAFC4; color:#4BAFC4; font-size:0.72rem; font-weight:600; letter-spacing:0.12em; margin:0 auto 1.75rem;">02</div>
+          <h3 class="display" style="font-size:1.5rem; font-weight:600; color:#252525; margin-bottom:0.75rem;">Strategy &amp; Onboarding</h3>
+          <p style="color:#6A6A6A; font-size:0.88rem; line-height:1.8;">We build a tailored growth roadmap aligned to your business goals. You meet your dedicated team, agree on KPIs, and we get to work.</p>
+        </div>
+
+        <div class="fade-up" style="text-align:center; transition-delay:0.2s;">
+          <div style="width:48px; height:48px; display:flex; align-items:center; justify-content:center; border:1px solid #4BAFC4; color:#4BAFC4; font-size:0.72rem; font-weight:600; letter-spacing:0.12em; margin:0 auto 1.75rem;">03</div>
+          <h3 class="display" style="font-size:1.5rem; font-weight:600; color:#252525; margin-bottom:0.75rem;">Execute &amp; Scale</h3>
+          <p style="color:#6A6A6A; font-size:0.88rem; line-height:1.8;">We implement, monitor, and iterate weekly. Transparent reporting keeps you informed as we compound gains month on month.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════
+       CONTACT
+  ════════════════════════════════════════════════════ -->
+  <section id="contact" class="grain" style="padding:7rem 0; background:#252525; position:relative; overflow:hidden;">
+    <div style="position:absolute; inset:0; background:radial-gradient(ellipse 50% 70% at 25% 60%, rgba(75,175,196,0.1) 0%, transparent 70%); pointer-events:none;"></div>
+
+    <div style="position:relative; z-index:2; max-width:1280px; margin:0 auto; padding:0 2rem;">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:6rem; align-items:start;">
+
+        <!-- Left -->
+        <div>
+          <p class="label fade-up" style="margin-bottom:0.75rem;">Get in Touch</p>
+          <h2 class="display fade-up" style="font-size:clamp(2.2rem,4vw,3.5rem); font-weight:600; color:#fff; letter-spacing:-0.02em; line-height:1.05; margin-bottom:1.5rem;">
+            Ready to Scale<br>Your Amazon Brand?
+          </h2>
+          <p class="fade-up" style="color:rgba(255,255,255,0.48); font-size:0.92rem; line-height:1.85; margin-bottom:2.5rem;">
+            Tell us about your business. We'll respond within 24 hours with a free account audit and a clear picture of where the opportunity lies.
+          </p>
+          <div class="fade-up" style="display:flex; flex-direction:column; gap:1rem;">
+            <div style="display:flex; align-items:center; gap:0.75rem; color:rgba(255,255,255,0.45); font-size:0.88rem;">
+              <span style="color:#4BAFC4; font-size:0.5rem;">◆</span>
+              Free, no-obligation account audit
+            </div>
+            <div style="display:flex; align-items:center; gap:0.75rem; color:rgba(255,255,255,0.45); font-size:0.88rem;">
+              <span style="color:#4BAFC4; font-size:0.5rem;">◆</span>
+              Response within 24 hours
+            </div>
+            <div style="display:flex; align-items:center; gap:0.75rem; color:rgba(255,255,255,0.45); font-size:0.88rem;">
+              <span style="color:#4BAFC4; font-size:0.5rem;">◆</span>
+              No long-term contracts required
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Form -->
+        <form class="fade-up" id="contact-form" onsubmit="handleSubmit(event)" style="display:flex; flex-direction:column; gap:1rem;">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+            <div>
+              <label class="form-label">Name</label>
+              <input type="text" class="form-field" placeholder="Your name" required>
+            </div>
+            <div>
+              <label class="form-label">Email</label>
+              <input type="email" class="form-field" placeholder="you@example.com" required>
+            </div>
+          </div>
+          <div>
+            <label class="form-label">Amazon Store URL</label>
+            <input type="url" class="form-field" placeholder="https://amazon.co.uk/stores/yourbrand">
+          </div>
+          <div>
+            <label class="form-label">Monthly Revenue</label>
+            <select class="form-field" style="cursor:pointer; background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(255,255,255,0.3)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E\"); background-repeat:no-repeat; background-position:right 16px center;">
+              <option value="" style="background:#252525; color:#fff;">Select range</option>
+              <option value="<5k" style="background:#252525; color:#fff;">Under £5,000 / month</option>
+              <option value="5-25k" style="background:#252525; color:#fff;">£5,000 – £25,000 / month</option>
+              <option value="25-100k" style="background:#252525; color:#fff;">£25,000 – £100,000 / month</option>
+              <option value="100k+" style="background:#252525; color:#fff;">£100,000+ / month</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">Message</label>
+            <textarea class="form-field" rows="4" placeholder="Tell us about your brand and goals..." style="resize:none;"></textarea>
+          </div>
+          <button type="submit" class="btn-primary" id="submit-btn" style="width:100%; text-align:center; border:none; cursor:pointer;">
+            Request Free Audit
+          </button>
+          <div id="form-success" style="display:none; text-align:center; padding:0.75rem; color:#4BAFC4; font-size:0.88rem; border:1px solid rgba(75,175,196,0.3);">
+            Thank you — we'll be in touch within 24 hours.
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════════════════
+       FOOTER
+  ════════════════════════════════════════════════════ -->
+  <footer style="background:#181818; border-top:1px solid rgba(255,255,255,0.05);">
+    <div style="max-width:1280px; margin:0 auto; padding:3.5rem 2rem 2rem;">
+      <div style="display:grid; grid-template-columns:1.5fr 1fr 1fr; gap:3rem; margin-bottom:3rem;">
+
+        <div>
+          <img src="brand_assets/MM Logo.png" alt="Malmstrom Media" style="height:32px; width:auto; margin-bottom:1rem;">
+          <p style="color:rgba(255,255,255,0.3); font-size:0.84rem; line-height:1.75;">The full-service Amazon agency for brands serious about growth.</p>
+        </div>
+
+        <div>
+          <p class="label" style="margin-bottom:1rem;">Services</p>
+          <ul style="list-style:none; display:flex; flex-direction:column; gap:0.6rem;">
+            <li><a href="#services" style="color:rgba(255,255,255,0.35); font-size:0.84rem; text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">Product Sourcing</a></li>
+            <li><a href="#services" style="color:rgba(255,255,255,0.35); font-size:0.84rem; text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">PPC Management</a></li>
+            <li><a href="#services" style="color:rgba(255,255,255,0.35); font-size:0.84rem; text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">Brand Management</a></li>
+            <li><a href="#services" style="color:rgba(255,255,255,0.35); font-size:0.84rem; text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">Brand Consultancy</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <p class="label" style="margin-bottom:1rem;">Company</p>
+          <ul style="list-style:none; display:flex; flex-direction:column; gap:0.6rem;">
+            <li><a href="#about" style="color:rgba(255,255,255,0.35); font-size:0.84rem; text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">About Us</a></li>
+            <li><a href="#process" style="color:rgba(255,255,255,0.35); font-size:0.84rem; text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">Our Process</a></li>
+            <li><a href="#contact" style="color:rgba(255,255,255,0.35); font-size:0.84rem; text-decoration:none; transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">Contact</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div style="border-top:1px solid rgba(255,255,255,0.05); padding-top:1.5rem; display:flex; justify-content:space-between; align-items:center;">
+        <p style="color:rgba(255,255,255,0.18); font-size:0.78rem;">© 2026 Malmstrom Media. All rights reserved.</p>
+        <p style="color:rgba(255,255,255,0.18); font-size:0.78rem;">Amazon Growth Agency</p>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- ════════════════════════════════════════════════════
+       JS
+  ════════════════════════════════════════════════════ -->
+  <script>
+    // ── Glowy wave canvas ─────────────────────────────────────
+    (function () {
+      const canvas = document.getElementById('hero-canvas');
+      const section = canvas.parentElement;
+      const ctx = canvas.getContext('2d');
+
+      let animId, time = 0;
+      const mouse  = { x: 0, y: 0 };
+      const target = { x: 0, y: 0 };
+
+      // Brand-matched wave palette
+      const waves = [
+        { offset: 0,             amplitude: 55, frequency: 0.003,  color: 'rgba(75,175,196,1)',   opacity: 0.50 },
+        { offset: Math.PI / 2,   amplitude: 65, frequency: 0.0026, color: 'rgba(46,143,163,1)',   opacity: 0.40 },
+        { offset: Math.PI,       amplitude: 45, frequency: 0.0034, color: 'rgba(125,207,223,1)',  opacity: 0.35 },
+        { offset: Math.PI * 1.5, amplitude: 58, frequency: 0.0022, color: 'rgba(75,175,196,0.8)', opacity: 0.25 },
+        { offset: Math.PI * 2,   amplitude: 40, frequency: 0.004,  color: 'rgba(255,255,255,0.6)',opacity: 0.18 },
+      ];
+
+      const INFLUENCE = 70, RADIUS = 320, SMOOTH = 0.1;
+
+      function resize() {
+        canvas.width  = section.offsetWidth;
+        canvas.height = section.offsetHeight;
+        const cx = canvas.width / 2, cy = canvas.height / 2;
+        mouse.x  = target.x = cx;
+        mouse.y  = target.y = cy;
+      }
+
+      function drawWave(w) {
+        const centerY = 260; // behind "Scale Your Amazon Brand" headline
+        ctx.save();
+        ctx.beginPath();
+        for (let x = 0; x <= canvas.width; x += 4) {
+          const dx = x - mouse.x;
+          const dy = centerY - mouse.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const inf  = Math.max(0, 1 - dist / RADIUS);
+          const mfx  = inf * INFLUENCE * Math.sin(time * 0.001 + x * 0.01 + w.offset);
+          const y    = centerY
+            + Math.sin(x * w.frequency + time * 0.002 + w.offset) * w.amplitude
+            + Math.sin(x * w.frequency * 0.4 + time * 0.003) * (w.amplitude * 0.45)
+            + mfx;
+          x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        }
+        ctx.lineWidth   = 2.5;
+        ctx.strokeStyle = w.color;
+        ctx.globalAlpha = w.opacity;
+        ctx.shadowBlur  = 35;
+        ctx.shadowColor = w.color;
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      function animate() {
+        time++;
+        mouse.x += (target.x - mouse.x) * SMOOTH;
+        mouse.y += (target.y - mouse.y) * SMOOTH;
+
+        // Solid dark background (matches brand charcoal)
+        const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        grad.addColorStop(0, '#252525');
+        grad.addColorStop(1, '#1e1e1e');
+        ctx.globalAlpha = 1;
+        ctx.shadowBlur  = 0;
+        ctx.fillStyle   = grad;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Clip waves to stop before "With Confidence" line (~380px)
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(0, 0, canvas.width, 390);
+        ctx.clip();
+        waves.forEach(drawWave);
+        ctx.restore();
+
+        // Soft fade from ~310px into background so waves dissolve before "With Confidence"
+        const fade = ctx.createLinearGradient(0, 310, 0, 390);
+        fade.addColorStop(0, 'rgba(37,37,37,0)');
+        fade.addColorStop(1, 'rgba(37,37,37,1)');
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = fade;
+        ctx.fillRect(0, 310, canvas.width, 80);
+
+        animId = requestAnimationFrame(animate);
+      }
+
+      section.addEventListener('mousemove', (e) => {
+        const r = section.getBoundingClientRect();
+        target.x = e.clientX - r.left;
+        target.y = e.clientY - r.top;
+      });
+      section.addEventListener('mouseleave', () => {
+        target.x = canvas.width  / 2;
+        target.y = canvas.height / 2;
+      });
+      window.addEventListener('resize', resize);
+
+      resize();
+      animate();
+    })();
+
+    // ── Nav scroll ────────────────────────────────────────────
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
+
+    // ── Fade-up on scroll ─────────────────────────────────────
+    const fadeEls = document.querySelectorAll('.fade-up');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    fadeEls.forEach(el => io.observe(el));
+
+    // ── Counter animation ─────────────────────────────────────
+    const counters = document.querySelectorAll('.counter');
+    const cio = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        const target = +e.target.dataset.target;
+        const duration = 1200;
+        const step = target / (duration / 16);
+        let current = 0;
+        const tick = () => {
+          current = Math.min(current + step, target);
+          e.target.textContent = Math.floor(current);
+          if (current < target) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+        cio.unobserve(e.target);
+      });
+    }, { threshold: 0.5 });
+    counters.forEach(el => cio.observe(el));
+
+    // ── Form submit ───────────────────────────────────────────
+    function handleSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submit-btn');
+      btn.textContent = 'Sending…';
+      btn.style.opacity = '0.7';
+      btn.disabled = true;
+      setTimeout(() => {
+        btn.style.display = 'none';
+        document.getElementById('form-success').style.display = 'block';
+      }, 1000);
+    }
+
+    // ── Smooth scroll ─────────────────────────────────────────
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const target = document.querySelector(a.getAttribute('href'));
+        if (!target) return;
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+  </script>
+
+</body>
+</html>
